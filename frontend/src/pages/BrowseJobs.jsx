@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import Footer from '../components/Footer';
 import Navbar from '../components/Navbar'
 function BrowseJobs() {
     const [job, setJob] = useState([
@@ -24,15 +24,15 @@ useEffect(() => {
     };
 
     fetchJobs();
-  },);
+  });
 
   return (
-<div>
-        <div>
+<div >
+    <div>
         <Navbar />
          <h1 className="text-3xl font-bold text-center mt-10">Available Jobs</h1>
        <p className="text-center mt-4">Explore a variety of job listings tailored to your skills and interests.</p>
- </div>
+    </div>
 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
   {job.map((item, index) => (
     <div key={index} className="border-2 border-green-800 rounded-lg p-4 shadow-lg bg-gray-100">
@@ -48,6 +48,7 @@ useEffect(() => {
     </div>
   ))}
 </div>
+<Footer/>
 </div>
 
   )

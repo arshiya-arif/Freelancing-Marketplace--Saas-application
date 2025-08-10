@@ -1,8 +1,15 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 function Hero() {
+  const navigate = useNavigate();
+
+  const handleBrowseJobs = () => {
+    navigate('/jobs');
+  };
+
   return (
     <div className="w-full flex flex-col-reverse lg:flex-row items-center">
 
@@ -41,7 +48,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <button className="px-6 py-3 md:px-7 md:py-4 bg-[#284910] rounded-full text-white mt-5 hover:bg-[#289102] transition-colors duration-300">
+          <button className="px-6 py-3 md:px-7 md:py-4 bg-[#284910] rounded-full text-white mt-5 hover:bg-[#289102] transition-colors duration-300 cursor-pointer" onClick={handleBrowseJobs}>
             Browse Jobs
           </button>
         </motion.div>
