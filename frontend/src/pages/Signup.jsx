@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function Signup() {
@@ -89,9 +90,12 @@ function Signup() {
               className='bg-[#3A5B22] text-white p-2 rounded-full w-full hover:bg-green-700 cursor-pointer'
             />
           </form>
-          <h3 className='font-medium text-center mt-6'>
-            Have an account? <a href="/login" className='text-blue-700 cursor-pointer'>Sign in</a>
-          </h3>
+          <h3 className="font-medium text-center mt-6">
+  Have an account?{' '}
+  <Link to="/login" className="text-blue-700 cursor-pointer hover:underline">
+    Sign in
+  </Link>
+</h3>
         </div>
       </div>
 

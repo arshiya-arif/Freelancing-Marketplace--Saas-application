@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate} from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -105,9 +106,12 @@ function Login() {
                 className='bg-[#3A5B22] text-white p-2 rounded-full w-full hover:bg-green-700 cursor-pointer'
               />
             </form>
-            <h3 className='font-medium text-center mt-6'>
-              Don’t have an account? <span className='text-blue-700 cursor-pointer'><a href="http://localhost:5173/signup">Sign up</a></span>
-            </h3>
+            <h3 className="font-medium text-center mt-6">
+  Don’t have an account?{' '}
+  <Link to="/signup" className="text-blue-700 cursor-pointer hover:underline">
+    Sign up
+  </Link>
+</h3>
           </div>
         </div>
       </div>

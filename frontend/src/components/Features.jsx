@@ -10,7 +10,7 @@ function Features() {
 
   return (
     <div className="bg-[#f9f9f9] py-20">
-      <h1 className='text-4xl font-bold text-center text-[#284910] italic'>Features</h1>
+      <h1 className='text-4xl font-bold text-center text-[#284910]'>Features</h1>
       <p className="text-center text-gray-600 mt-2 mb-10 max-w-xl mx-auto">
         Explore the key features that make our platform reliable and easy to use.
       </p>
