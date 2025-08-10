@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
+import BrowseJobs from './pages/BrowseJobs';
 import Home from './pages/Home';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home/>}></Route>
+        <Route path="/jobs" element={<BrowseJobs />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </Router>

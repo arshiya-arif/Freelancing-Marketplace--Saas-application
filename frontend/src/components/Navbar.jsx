@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Menu, X } from 'lucide-react'; // optional: install lucide-react for icons
-
+import {Link} from 'react-router-dom';
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -39,10 +39,10 @@ function Navbar() {
        
         <nav className="hidden md:flex gap-6 text-gray-700 font-medium">
           <ul className="flex gap-6 items-center">
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Home</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Browse Jobs</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">About</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Contact</li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/">Home</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/jobs">Browse Jobs</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/about">About</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/contact">Contact</Link></li>
           </ul>
         </nav>
 
@@ -70,10 +70,10 @@ function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden px-6 pb-4 flex flex-col gap-4">
           <ul className="flex flex-col gap-3 text-gray-700 font-medium">
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Home</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Browse Jobs</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">About</li>
-            <li className="cursor-pointer hover:text-green-700 hover:font-bold">Contact</li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/">Home</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/jobs">Browse Jobs</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/about">About</Link></li>
+            <li className="cursor-pointer hover:text-green-700 hover:font-bold"><Link to="/contact">Contact</Link></li>
           </ul>
 
           <div>
