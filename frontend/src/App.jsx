@@ -9,6 +9,7 @@ import BrowseJobs from './pages/BrowseJobs';
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import JobDetails from './pages/JobDetails';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/jobs" element={<BrowseJobs />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path='/job/:id' element={<JobDetails/>}/>
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </Router>

@@ -13,6 +13,6 @@ router.route('/job/:id').put(isProtected,isAdmin,updateJob);
 router.route('/job/:id').delete(isProtected,isAdmin,deleteJob);
 router.route('/openjobs').get(getOpenJobs);
 
-router.route('/job/:id').get(isProtected, jobDetails); // Get job details by ID
+router.route('/job/:id').get(jobDetails); // Get job details by ID
 router.route('/job/:jobId/complete').put(isProtected, isAdmin, markJobAsCompleted); // Mark job as completed
 export default router;

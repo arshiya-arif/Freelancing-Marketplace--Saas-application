@@ -1,71 +1,70 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { ClipboardList, Search, Send, CheckCircle, Award } from 'lucide-react';
 
 function HowItWorks() {
   const steps = [
     {
-      title: 'Step 1: Sign Up',
-      description: 'Create an account by providing your email and password.',
+      icon: <ClipboardList size={20} className="text-emerald-500" />,
+      title: 'Sign Up',
+      description: 'Create an account with your email and password.',
     },
     {
-      title: 'Step 2: Browse Jobs',
-      description: 'Explore available job listings that match your skills.',
+      icon: <Search size={20} className="text-emerald-500" />,
+      title: 'Browse Jobs',
+      description: 'Find listings that match your skills.',
     },
     {
-      title: 'Step 3: Bid on Jobs',
-      description: "Submit your proposal for the jobs you're interested in.",
+      icon: <Send size={20} className="text-emerald-500" />,
+      title: 'Bid on Jobs',
+      description: 'Send proposals for jobs you like.',
     },
     {
-      title: 'Step 4: Get Work Done',
-      description: 'Once hired, collaborate with the client to complete the project.',
+      icon: <CheckCircle size={20} className="text-emerald-500" />,
+      title: 'Get Work Done',
+      description: 'Collaborate with clients and finish the project.',
     },
     {
-      title: 'Step 5: Job Completion Certificate',
-      description: 'Once the project is completed, you will receive a certificate of completion.',
+      icon: <Award size={20} className="text-emerald-500" />,
+      title: 'Receive Certificate',
+      description: 'Get a certificate for completed projects.',
     },
   ];
 
   return (
-    <section className="w-full py-16 px-6 bg-[#f9f9f9]">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        
+    <section className="w-full py-16 px-6 bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-6xl mx-auto">
        
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: false, amount: 0.4 }}
-          className="w-full"
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-3xl md:text-4xl font-extrabold text-center mb-12
+                     bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 
+                     bg-clip-text text-transparent"
         >
-          <img
-            src="/works section.jpg"
-            alt="How It Works"
-            className="w-full rounded-lg shadow-lg hover:scale-105 transition-transform duration-500"
-          />
-        </motion.div>
+          How It Works
+        </motion.h2>
 
-       
-        <div className="flex flex-col gap-4 text-[#284910]">
-          <motion.h2
-            initial={{ opacity: 0, y: -30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: false, amount: 0.6 }}
-            className="text-4xl font-bold mb-4"
-          >
-            How It Works
-          </motion.h2>
-
+      
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {steps.map((step, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: false, amount: 0.4 }}
-              className="bg-white border-l-4 border-[#284910] px-6 py-4 rounded-md shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300"
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+              className="bg-white rounded-lg shadow-md hover:shadow-lg 
+                         px-5 py-6 flex flex-col items-center text-center
+                         hover:scale-105 transition-transform duration-300"
             >
-              <h3 className="text-lg font-semibold">{step.title}</h3>
+            
+              <div className="p-3 bg-emerald-50 rounded-full mb-3">
+                {step.icon}
+              </div>
+   
+              <h3 className="text-base font-semibold text-gray-800">{step.title}</h3>
+              
               <p className="text-sm text-gray-600 mt-1">{step.description}</p>
             </motion.div>
           ))}
@@ -76,4 +75,3 @@ function HowItWorks() {
 }
 
 export default HowItWorks;
-

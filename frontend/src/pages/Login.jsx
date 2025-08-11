@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -23,96 +24,101 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData,{
+      const res = await axios.post('http://localhost:5000/api/auth/login', formData, {
         withCredentials: true
       });
-      const userData = res.data.user; 
-      login(userData); // update context
-      
+
       if (res.status === 200) {
+        const userData = res.data.user; 
+        const authToken = res.data.token;
+        login(userData, authToken);
         toast.success('Login successful!');
-        
         setFormData({ email: '', password: '' });
-      setTimeout(()=>{
-        navigate('/');
-      },500)
+        setTimeout(() => {
+          navigate('/');
+        }, 500);
       }
-    }catch (error) {
+    } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
   return (
-   
-    <div className="min-h-screen bg-white md:flex">
-      {/* Left Side with Image */}
-      <div className='w-1/2 bg-black hidden md:block min-h-screen'>
-        <div className="relative h-full w-full">
-          {/* Background Image */}
-          <img
-            src="/pic3.jpg"
-            alt="Login"
-            className="absolute inset-0 w-full h-full object-cover opacity-50 rounded-xl"
-          />
-          {/* Black Overlay */}
-          <div className="absolute inset-0 bg-opacity-30 rounded-xl"></div>
-          {/* Text Content */}
-          <div className="absolute inset-0 flex flex-col justify-center items-center z-10 text-white text-xl font-semibold px-4 text-center">
-            <h1 className='text-2xl font-poppins font-black'>
-              Welcome Back to <br /><span className='text-3xl text-amber-300'>Freelancing SaaS Platform!</span>
-            </h1>
-            <h2 className='mt-2 text-sm font-poppins'>
-              Log in to continue your journey — connect with clients, manage projects, and grow your career.
-            </h2>
-          </div>
+    <div className="min-h-screen flex">
+      {/* Left Side */}
+      <div className="hidden md:flex md:w-1/2 relative">
+        <img
+          src="/pic3.jpg"
+          alt="Login"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 flex flex-col items-center justify-center text-center p-8 text-white">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            Welcome Back to <br />
+            <span className="text-emerald-400">FreelancePro</span>
+          </h1>
+          <p className="mt-4 max-w-md text-gray-300">
+            Log in to continue your journey — connect with clients, manage projects, and grow your career.
+          </p>
         </div>
       </div>
 
-      {/* Right Side Form */}
-      <div className="md:w-1/2 min-h-screen w-full">
-        <div className='md:p-20 p-10 flex flex-col justify-center h-full'>
-          
-          <h1 className="flex items-center gap-3 mb-3">
-  <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
-  <span className="text-xl font-semibold text-gray-800">Freelancing SaaS Platform</span>
-</h1>
-          <h1 className='md:text-4xl font-semibold font-poppins text-2xl'>Welcome Back!</h1>
-          <h1 className='mt-3'>Enter your Credentials to access your account</h1>
-          <div className='mt-10'>
-            <form onSubmit={handleSubmit}>
-              <label className='font-semibold'>Email Address</label>
+      {/* Right Side */}
+      <div className="flex w-full md:w-1/2 items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="w-full max-w-md bg-white/70 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border border-white/40">
+
+          <div className="flex items-center gap-3 mb-6">
+            <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+            <span className="text-lg font-semibold text-gray-800">FreelancePro</span>
+          </div>
+
+    
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+          <p className="text-gray-600 mb-8">Enter your credentials to access your account</p>
+
+        
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
               <input
                 type="email"
-                placeholder='Enter your email'
-                className='border border-gray-300 p-2 rounded-full w-full mb-5 bg-transparent'
+                placeholder="Enter your email"
+                className="border border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 p-3 rounded-xl w-full shadow-sm transition"
                 onChange={handleChange}
                 name="email"
                 value={formData.email}
                 required
               />
-              <label className='font-semibold'>Password</label>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input
                 type="password"
-                placeholder='Enter your password'
-                className='border border-gray-300 p-2 rounded-full w-full mb-5 bg-transparent'
+                placeholder="Enter your password"
+                className="border border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 p-3 rounded-xl w-full shadow-sm transition"
                 onChange={handleChange}
                 name="password"
                 value={formData.password}
                 required
               />
-              <input
-                type="submit"
-                value="Login"
-                className='bg-[#3A5B22] text-white p-2 rounded-full w-full hover:bg-green-700 cursor-pointer'
-              />
-            </form>
-            <h3 className="font-medium text-center mt-6">
-  Don’t have an account?{' '}
-  <Link to="/signup" className="text-blue-700 cursor-pointer hover:underline">
-    Sign up
-  </Link>
-</h3>
-          </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 rounded-xl shadow-lg hover:shadow-emerald-200 hover:scale-[1.02] transition-all duration-300 font-medium cursor-pointer"
+            >
+              Login
+            </button>
+          </form>
+
+
+          <p className="text-center text-gray-600 mt-6">
+            Don’t have an account?{' '}
+            <Link to="/signup" className="text-emerald-600 font-medium hover:underline cursor-pointer">
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>

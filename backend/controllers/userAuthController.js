@@ -74,21 +74,34 @@ export const loginUser = async (req,res)=>{
 };
 
 
-export const logoutUser = async (req, res) => {
-    try{
-        res.cookie('token',"",{
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
-            maxAge: 0 // Set cookie to expire immediately
-        });
-        res.status(200).json({message: "Logout successful"});
-    } catch(error){
-        console.error("Error logging out user:", error);
-        res.status(500).json({message: "Internal server error"});
-    }}
+// export const logoutUser = async (req, res) => {
+//     try{
+//         res.cookie('token',"",{
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === 'production',
+//             sameSite: 'Strict',
+//             maxAge: 0 // Set cookie to expire immediately
+//         });
+//         res.status(200).json({message: "Logout successful"});
+//     } catch(error){
+//         console.error("Error logging out user:", error);
+//         res.status(500).json({message: "Internal server error"});
+//     }}
 
 
+export const logoutUser = (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+    });
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error("Error logging out user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 
