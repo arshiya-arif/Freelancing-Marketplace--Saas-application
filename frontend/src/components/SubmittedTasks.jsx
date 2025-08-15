@@ -15,7 +15,7 @@ function SubmittedTasks() {
           withCredentials: true,
         });
 
-        const jobsData = jobsRes.data.jobs || [];
+        const jobsData = jobsRes.data?.jobs || [];
         const jobsWithTasks = [];
         const tasksMap = {};
 
@@ -25,21 +25,22 @@ function SubmittedTasks() {
               `http://localhost:5000/api/admin/job/${job._id}/tasks`,
               { withCredentials: true }
             );
-            const relevantTasks = taskRes.data.tasks.filter(
+            const relevantTasks = taskRes.data?.tasks?.filter(
               (t) => t.status !== "pending"
-            );
+            ) || [];
             if (relevantTasks.length > 0) {
               jobsWithTasks.push(job);
               tasksMap[job._id] = relevantTasks;
             }
-          } catch {
-           console.log(error);
+          } catch (err) {
+            console.warn(`Failed to fetch tasks for job ${job._id}:`, err);
           }
         }
 
         setJobs(jobsWithTasks);
         setTasksByJob(tasksMap);
       } catch (error) {
+        console.error(error);
         toast.error("Error fetching tasks");
       } finally {
         setLoading(false);
@@ -51,13 +52,17 @@ function SubmittedTasks() {
 
   const handleApprove = async (taskId, jobId) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/approve-task/${taskId}`, {}, { withCredentials: true });
+      await axios.put(
+        `http://localhost:5000/api/admin/approve-task/${taskId}`,
+        {},
+        { withCredentials: true }
+      );
       toast.success("Task approved successfully!");
-      setTasksByJob(prev => ({
+      setTasksByJob((prev) => ({
         ...prev,
-        [jobId]: prev[jobId].map(t =>
+        [jobId]: prev[jobId]?.map((t) =>
           t._id === taskId ? { ...t, status: "approved" } : t
-        )
+        ) || [],
       }));
     } catch {
       toast.error("Failed to approve task");
@@ -66,13 +71,17 @@ function SubmittedTasks() {
 
   const handleReject = async (taskId, jobId) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/reject-task/${taskId}`, {}, { withCredentials: true });
+      await axios.put(
+        `http://localhost:5000/api/admin/reject-task/${taskId}`,
+        {},
+        { withCredentials: true }
+      );
       toast.success("Task rejected successfully!");
-      setTasksByJob(prev => ({
+      setTasksByJob((prev) => ({
         ...prev,
-        [jobId]: prev[jobId].map(t =>
+        [jobId]: prev[jobId]?.map((t) =>
           t._id === taskId ? { ...t, status: "rejected" } : t
-        )
+        ) || [],
       }));
     } catch {
       toast.error("Failed to reject task");
@@ -81,9 +90,15 @@ function SubmittedTasks() {
 
   const handleMarkComplete = async (jobId) => {
     try {
-      await axios.put(`http://localhost:5000/api/jobs/job/${jobId}/complete`, {}, { withCredentials: true });
+      await axios.put(
+        `http://localhost:5000/api/jobs/job/${jobId}/complete`,
+        {},
+        { withCredentials: true }
+      );
       toast.success("Job marked as complete!");
-      setJobs(prev => prev.map(j => j._id === jobId ? { ...j, status: "completed" } : j));
+      setJobs((prev) =>
+        prev.map((j) => (j._id === jobId ? { ...j, status: "completed" } : j))
+      );
     } catch {
       toast.error("Failed to mark job as complete");
     }
@@ -100,13 +115,13 @@ function SubmittedTasks() {
       {jobs.length === 0 ? (
         <p>No tasks found.</p>
       ) : (
-        jobs.map(job => {
-          const allApproved = tasksByJob[job._id]?.every(t => t.status === "approved");
+        jobs.map((job) => {
+          const allApproved = tasksByJob[job._id]?.every((t) => t.status === "approved");
           return (
             <div key={job._id} className="mb-8 sm:mb-10">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                 <h3 className="text-lg sm:text-xl font-semibold text-emerald-700">
-                  {job.title} {job.status && `- ${job.status}`}
+                  {job?.title} {job.status && `- ${job.status}`}
                 </h3>
                 {allApproved && job.status !== "completed" && (
                   <button
@@ -118,7 +133,7 @@ function SubmittedTasks() {
                 )}
               </div>
 
-              {/* Responsive Table / Cards */}
+             
               <div className="overflow-x-auto bg-white rounded-lg shadow border border-gray-200">
                 <table className="min-w-full text-xs sm:text-sm text-left hidden sm:table">
                   <thead className="bg-emerald-100 text-emerald-900">
@@ -137,26 +152,36 @@ function SubmittedTasks() {
                     {tasksByJob[job._id]?.map((task, index) => (
                       <tr key={task._id} className="border-t hover:bg-gray-50 transition">
                         <td className="px-2 sm:px-4 py-2">{index + 1}</td>
-                        <td className="px-2 sm:px-4 py-2">{task.title}</td>
-                        <td className="px-2 sm:px-4 py-2">{task.description}</td>
-                        <td className="px-2 sm:px-4 py-2">{task.status}</td>
-                        <td className="px-2 sm:px-4 py-2">{task.submission_note || "-"}</td>
+                        <td className="px-2 sm:px-4 py-2">{task?.title || "-"}</td>
+                        <td className="px-2 sm:px-4 py-2">{task?.description || "-"}</td>
+                        <td className="px-2 sm:px-4 py-2">{task?.status || "-"}</td>
+                        <td className="px-2 sm:px-4 py-2">{task?.submission_note || "-"}</td>
                         <td className="px-2 sm:px-4 py-2">
-                          {task.submitted_file_url ? (
-                            <a href={task.submitted_file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          {task?.submitted_file_url ? (
+                            <a
+                              href={task.submitted_file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
                               View File
                             </a>
                           ) : "-"}
                         </td>
                         <td className="px-2 sm:px-4 py-2">
-                          {task.submitted_external_link ? (
-                            <a href={task.submitted_external_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          {task?.submitted_external_link ? (
+                            <a
+                              href={task.submitted_external_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
                               Visit Link
                             </a>
                           ) : "-"}
                         </td>
                         <td className="px-2 sm:px-4 py-2 flex gap-1 sm:gap-2 justify-center flex-wrap">
-                          {(task.status !== "approved" && task.status !== "rejected") && (
+                          {task?.status !== "approved" && task?.status !== "rejected" && (
                             <>
                               <button
                                 onClick={() => handleApprove(task._id, job._id)}
@@ -174,37 +199,46 @@ function SubmittedTasks() {
                           )}
                         </td>
                       </tr>
-                    ))}
+                    )) || <tr><td colSpan={8} className="text-center py-4">No tasks found</td></tr>}
                   </tbody>
                 </table>
 
-                {/* Mobile Cards */}
                 <div className="sm:hidden flex flex-col gap-4 p-2">
                   {tasksByJob[job._id]?.map((task, index) => (
                     <div key={task._id} className="border rounded-lg p-3 shadow-sm bg-gray-50">
                       <p><strong>#{index + 1}</strong></p>
-                      <p><strong>Title:</strong> {task.title}</p>
-                      <p><strong>Description:</strong> {task.description}</p>
-                      <p><strong>Status:</strong> {task.status}</p>
-                      <p><strong>Note:</strong> {task.submission_note || "-"}</p>
+                      <p><strong>Title:</strong> {task?.title || "-"}</p>
+                      <p><strong>Description:</strong> {task?.description || "-"}</p>
+                      <p><strong>Status:</strong> {task?.status || "-"}</p>
+                      <p><strong>Note:</strong> {task?.submission_note || "-"}</p>
                       <p>
                         <strong>File:</strong>{" "}
-                        {task.submitted_file_url ? (
-                          <a href={task.submitted_file_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {task?.submitted_file_url ? (
+                          <a
+                            href={task.submitted_file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
                             View File
                           </a>
                         ) : "-"}
                       </p>
                       <p>
                         <strong>Link:</strong>{" "}
-                        {task.submitted_external_link ? (
-                          <a href={task.submitted_external_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {task?.submitted_external_link ? (
+                          <a
+                            href={task.submitted_external_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
                             Visit Link
                           </a>
                         ) : "-"}
                       </p>
                       <div className="flex gap-2 flex-wrap mt-2">
-                        {(task.status !== "approved" && task.status !== "rejected") && (
+                        {task?.status !== "approved" && task?.status !== "rejected" && (
                           <>
                             <button
                               onClick={() => handleApprove(task._id, job._id)}
@@ -222,9 +256,8 @@ function SubmittedTasks() {
                         )}
                       </div>
                     </div>
-                  ))}
+                  )) || <p className="text-center py-2">No tasks found</p>}
                 </div>
-
               </div>
             </div>
           );
@@ -235,3 +268,4 @@ function SubmittedTasks() {
 }
 
 export default SubmittedTasks;
+

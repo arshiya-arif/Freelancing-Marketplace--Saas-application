@@ -10,7 +10,6 @@ function MyBids() {
   const [tasks, setTasks] = useState([]);
   const [jobsInfo, setJobsInfo] = useState({}); 
 
- 
   useEffect(() => {
     const fetchBids = async () => {
       try {
@@ -30,8 +29,8 @@ function MyBids() {
         const taskData = res.data || [];
         setTasks(taskData);
 
-        
-        const jobIds = [...new Set(taskData.map(t => t.job_id._id))];
+      
+        const jobIds = [...new Set(taskData.filter(t => t.job_id).map(t => t.job_id._id))]; 
         const jobsMap = {};
         await Promise.all(jobIds.map(async (jobId) => {
           try {
@@ -64,12 +63,22 @@ function MyBids() {
     }
   };
 
+
+  const handleDownload = (url, filename) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || 'certificate.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-      
+
         <div className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent tracking-wide">
             {activeTab === 'bids' ? 'My Bids' : 'My Tasks'}
@@ -81,7 +90,7 @@ function MyBids() {
           </p>
         </div>
 
-     
+        
         <div className="flex justify-center mb-8 gap-4">
           <button onClick={() => setActiveTab('bids')} 
             className={`px-6 py-2 rounded-full font-semibold transition ${activeTab==='bids' ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
@@ -116,20 +125,23 @@ function MyBids() {
             ))}
           </div>
         ) : (
-          tasks.length === 0 ? <p className="text-center text-gray-500">No tasks assigned.</p> :
+          tasks.filter(t => t.job_id).length === 0 ? <p className="text-center text-gray-500">No tasks assigned.</p> :
           Array.from(tasks.reduce((map, t) => {
+            if (!t.job_id) return map; // skip null jobs
             const jobId = t.job_id._id;
             if (!map.has(jobId)) map.set(jobId, []);
             map.get(jobId).push(t);
             return map;
           }, new Map())).map(([jobId, jobTasks]) => {
             const job = jobTasks[0].job_id;
+            if (!job) return null; 
             const jobStatus = jobsInfo[jobId]?.status || job.status;
             const certificate = jobsInfo[jobId]?.certificate || job.certificate;
 
             return (
               <div key={jobId} className="mb-6 bg-white rounded-xl shadow-lg p-5 border border-gray-100">
-
+                
+              
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-xl font-bold text-emerald-600">{job.title}</h2>
                   <span className={`px-2 py-1 text-xs rounded-full font-semibold ${getStatusStyle(jobStatus)}`}>
@@ -137,12 +149,17 @@ function MyBids() {
                   </span>
                 </div>
 
+             
                 {jobStatus === 'completed' && certificate && (
-                  <a href={certificate} target="_blank" rel="noopener noreferrer" className="inline-block mb-3 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                  <button 
+                    onClick={() => handleDownload(certificate, `${job.title}-certificate.pdf`)}
+                    className="inline-block mb-3 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                  >
                     Download Certificate
-                  </a>
+                  </button>
                 )}
 
+                {/* Tasks under job */}
                 {jobTasks.map(task => (
                   <div key={task._id} className="border-t border-gray-200 pt-3 mt-3 flex justify-between items-center flex-col sm:flex-row sm:items-center gap-3">
                     <div>
