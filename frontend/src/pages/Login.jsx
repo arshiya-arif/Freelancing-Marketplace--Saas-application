@@ -21,27 +21,33 @@ function Login() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData, {
-        withCredentials: true
-      });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/login', formData, {
+      withCredentials: true
+    });
 
-      if (res.status === 200) {
-        const userData = res.data.user; 
-        const authToken = res.data.token;
-        login(userData, authToken);
-        toast.success('Login successful!');
-        setFormData({ email: '', password: '' });
-        setTimeout(() => {
-          navigate('/');
-        }, 500);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed. Please try again.');
+    if (res.status === 200) {
+      const userData = res.data.user; 
+      const authToken = res.data.token;
+
+      // Save user to sessionStorage for persistence
+      sessionStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('token', authToken);
+
+      login(userData, authToken); // update context state
+      toast.success('Login successful!');
+      setFormData({ email: '', password: '' });
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
     }
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || 'Login failed. Please try again.');
+  }
+};
+
 
   return (
     <div className="min-h-screen flex">

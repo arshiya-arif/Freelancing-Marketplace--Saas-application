@@ -12,7 +12,7 @@ function Hero() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white w-full flex flex-col-reverse lg:flex-row items-center py-16 lg:py-12">
       
-      {/* Left Content */}
+      
       <div className="p-6 md:p-12 lg:p-20 w-full lg:w-1/2 text-center lg:text-left">
         
        
@@ -55,7 +55,7 @@ function Hero() {
         </motion.div>
       </div>
 
-      {/* Right Image */}
+    
       
       <div className="w-full lg:w-1/2 flex justify-center p-6 md:p-10">
         <motion.img

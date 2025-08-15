@@ -1,5 +1,6 @@
 import Job from '../models/jobModel.js';
 import Task from '../models/taskModel.js';
+import Bid from '../models/bidModel.js';
 import { generatePDF } from '../utils/pdfGenerator.js';
 // import { sendEmail } from '../utils/email.js';
 import { sendCertificateEmail } from '../utils/email.js';
@@ -116,21 +117,76 @@ if(incompleteTasks.length > 0) {
         job.status = 'completed';
         await job.save();
         
-        // Generate PDF
+        
         const pdfPath = await generatePDF(job);
-        // Send email notification
         await sendCertificateEmail(job.assignedFreelancer.email, 'Job Completion Certificate', 'Please find attached the job completion certificate.', pdfPath);
-        // Upload PDF to Cloudinary
         const pdfUpload = await cloudinary.uploader.upload(pdfPath, {
             folder: 'job_certificates',
-            resource_type: 'raw'
-        });
-        // Update job with PDF URL
-       const downloadLink = pdfUpload.secure_url;
+              type: 'upload', // ensures public access
+            resource_type: 'auto',
 
-        res.status(200).json({ message: 'Job marked as completed', pdf: downloadLink });
+        });
+    //     // Update job with PDF URL
+    //    const downloadLink = pdfUpload.secure_url;
+
+    //     res.status(200).json({ message: 'Job marked as completed', pdf: downloadLink });
+    // Save the certificate URL in job
+job.certificate = pdfUpload.secure_url;
+await job.save();
+
+
+res.status(200).json({ message: 'Job marked as completed', pdf: pdfUpload.secure_url });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
         
+
+//total jobs 
+export const totaljobs = async (req, res) => {
+    try {
+    const jobs = await Job.find();
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getInProgressJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({ status: "in-progress" })
+      .populate("assignedFreelancer", "name email");
+
+    const jobsWithBids = await Promise.all(
+      jobs.map(async (job) => {
+        const acceptedBid = await Bid.findOne({
+          job_id: job._id,
+          status: "accepted",
+        }).populate("user_id", "name email");
+
+        return {
+          ...job.toObject(),
+          acceptedBid,
+        };
+      })
+    );
+
+    res.status(200).json({ message: "Jobs fetched successfully", jobs: jobsWithBids });
+  } catch (error) {
+    console.error("Error fetching in-progress jobs with bids:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// export const getJobById = async (req, res) => {
+//   try {
+//     const job = await Job.findById(req.params.id);
+//     if (!job) return res.status(404).json({ message: 'Job not found' });
+//     res.status(200).json({
+//       status: job.status,
+//       certificate: job.certificate || null
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: 'Internal server error', error: err.message });
+//   }
+// };

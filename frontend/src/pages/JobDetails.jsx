@@ -72,7 +72,7 @@ const handleBidSubmit = async (e) => {
     const data = await response.json();
     console.log('Bid submitted successfully:', data);
     
-    // Reset form and hide it
+    
     setBidData({
       bid_amount: '',
       timeline: '',
@@ -140,7 +140,6 @@ const handleBidSubmit = async (e) => {
         </div>
       </div>
 
-      {/* Apply Now Button */}
       {!showForm && (
         <div className="mt-5 flex justify-center sm:justify-end px-4">
           <button
@@ -155,7 +154,7 @@ const handleBidSubmit = async (e) => {
         </div>
       )}
 
-      {/* Bid Form */}
+ 
       {showForm && (
         <div className="flex justify-center px-4 py-6">
           <form

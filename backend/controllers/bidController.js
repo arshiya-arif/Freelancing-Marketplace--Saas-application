@@ -101,3 +101,37 @@ export const acceptBid = async (req,res)=>{
     return res.status(500).json({message: 'Internal server error'});
   }
 }
+
+
+export const getJobsWithBids = async (req, res) => {
+  try {
+    const jobs = await Job.find({}).lean();
+    const jobsWithBids = [];
+
+    for (let job of jobs) {
+      const bidCount = await Bid.countDocuments({ job_id: job._id });
+      if (bidCount > 0) {
+        jobsWithBids.push(job);
+      }
+    }
+
+    if (jobsWithBids.length === 0) {
+      return res.status(404).json({ message: "No jobs with bids found" });
+    }
+
+    res.status(200).json({ jobs: jobsWithBids });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+// Get all bids
+export const getAllBids = async (req, res) => {
+  try {
+    const bids = await Bid.find();
+    res.json(bids);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

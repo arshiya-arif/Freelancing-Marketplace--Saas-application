@@ -44,7 +44,7 @@ function Signup() {
 
   return (
     <div className="min-h-screen bg-white md:flex">
-      {/* Left side form */}
+      
       <div className="md:w-1/2 min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
         <div className="w-full max-w-md bg-white/70 backdrop-blur-lg shadow-2xl rounded-2xl p-8 border border-white/40">
           <h1 className="flex items-center mb-6">
@@ -111,7 +111,7 @@ function Signup() {
         </div>
       </div>
 
-      {/* Right side image */}
+     
       <div className="hidden md:block md:w-1/2 relative min-h-screen bg-black">
         <img
           src="/freelancer-using-chatgpt.jpg"

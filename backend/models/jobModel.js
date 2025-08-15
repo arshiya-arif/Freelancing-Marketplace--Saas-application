@@ -35,6 +35,10 @@ const jobSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    certificate: {
+        type: String,
+        default: null
+    },
     assignedFreelancer: {
   type: mongoose.Schema.Types.ObjectId,
   ref: 'User',

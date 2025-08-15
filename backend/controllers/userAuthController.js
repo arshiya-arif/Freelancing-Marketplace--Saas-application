@@ -3,8 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
-//Register User
-// POST /api/auth/register
+
 export const registerUser = async (req, res)=>{
     const {name, email, password, role, skills, bio}= req.body;
     try{
@@ -34,8 +33,6 @@ export const registerUser = async (req, res)=>{
 };
 
 
-// Login User
-// POST /api/auth/login
 
 export const loginUser = async (req,res)=>{
     const {email, password}=req.body;

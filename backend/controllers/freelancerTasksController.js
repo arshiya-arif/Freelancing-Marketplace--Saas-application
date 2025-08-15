@@ -30,7 +30,7 @@ export const getAllMyTasks = async (req, res) => {
   const loggedInUserId = req.user._id;
   try{
     const tasks = await Task.find({ assigned_user_id: loggedInUserId })
-      .populate('job_id', 'title')
+      .populate('job_id')
       .populate('assigned_user_id', 'name email');
 
     if (tasks.length === 0) {
@@ -77,5 +77,24 @@ const submitted_file_url = req.file?.path;
   } catch (error) {
     console.error("Error submitting task:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getTaskById = async (req, res) => {
+  const taskId = req.params.id;
+
+  try {
+    const task = await Task.findById(taskId)
+      .populate('job_id', 'title description deadline') // populate job info
+      .populate('assigned_user_id', 'name email'); // optional, if you want user info
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.error('Error fetching task:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };

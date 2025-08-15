@@ -61,6 +61,32 @@ export const deleteTask = async (req, res) => {
     }
     
 }
+export const editTask = async (req, res) => {
+    const { taskId } = req.params;
+    const { title, description } = req.body;
+
+    try {
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        // Update only provided fields
+        if (title !== undefined) task.title = title;
+        if (description !== undefined) task.description = description;
+
+        const updatedTask = await task.save();
+
+        res.status(200).json({
+            message: "Task updated successfully",
+            task: updatedTask,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 // Approve Task
 export const approveTask = async (req, res) => {
@@ -156,3 +182,14 @@ export const getAllTasksForJob = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+
+// Get all tasks
+export const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find();
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
